@@ -1,4 +1,4 @@
-package com.example.web_d4;
+package com.web_d4;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
@@ -39,7 +39,7 @@ public class FoodServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         resp.setContentType("text/html");
         PrintWriter out = resp.getWriter();
-
+        req.getSession().getId();
         HtmlResponse htmlResponse = new HtmlResponse(this.views.get("order"));
         FoodForm foodForm = new FoodForm(this.mealsPerDay);
         htmlResponse.addParameter("form",foodForm.build());
@@ -47,7 +47,12 @@ public class FoodServlet extends HttpServlet {
         out.println(htmlResponse.getHtml());
     }
 
-
+    @Override
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        for (DaysOfWeek day: DaysOfWeek.values()){
+            System.out.println("USER "+req.getSession().getId()+" FOR DAY " + day.toString() + " CHOSE "+ req.getParameter(day.toString().toLowerCase()));
+        }
+    }
 
     private void loadMeals(ServletContext context) throws IOException {
         for (DaysOfWeek day: DaysOfWeek.values()){
