@@ -1,4 +1,6 @@
-package com.web_d4;
+package com.web_d4.app;
+
+import com.web_d4.app.DaysOfWeek;
 
 import java.util.List;
 import java.util.Map;

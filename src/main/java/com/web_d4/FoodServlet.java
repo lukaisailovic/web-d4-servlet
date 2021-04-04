@@ -1,5 +1,10 @@
 package com.web_d4;
 
+import com.web_d4.app.DaysOfWeek;
+import com.web_d4.app.FoodForm;
+import com.web_d4.core.HtmlResponse;
+import com.web_d4.core.StaticFileReader;
+
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;

@@ -1,4 +1,4 @@
-package com.web_d4;
+package com.web_d4.core;
 
 import java.util.HashMap;
 import java.util.regex.Matcher;

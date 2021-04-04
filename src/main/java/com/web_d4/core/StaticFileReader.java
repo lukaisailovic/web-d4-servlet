@@ -1,4 +1,4 @@
-package com.web_d4;
+package com.web_d4.core;
 
 import javax.servlet.ServletContext;
 import java.io.*;
