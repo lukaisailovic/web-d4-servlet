@@ -1,6 +1,9 @@
 package com.web_d4;
 
 import com.web_d4.app.FoodForm;
+import com.web_d4.app.OrderList;
+import com.web_d4.app.User;
+import com.web_d4.app.UserOrderHtml;
 import com.web_d4.core.HtmlResponse;
 import com.web_d4.core.StaticFileReader;
 
@@ -41,6 +44,10 @@ public class SuccessOrderServlet extends HttpServlet {
         resp.setContentType("text/html");
         PrintWriter out = resp.getWriter();
         HtmlResponse htmlResponse = new HtmlResponse(this.views.get("success"));
+        User user = new User(req.getSession().getId());
+        OrderList orderList = OrderList.get(getServletContext());
+        UserOrderHtml userOrderHtml = new UserOrderHtml(orderList.getUserOrders(user));
+        htmlResponse.addParameter("userOrder",userOrderHtml.build());
         out.println(htmlResponse.getHtml());
     }
 }

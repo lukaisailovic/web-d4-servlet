@@ -35,4 +35,15 @@ public class OrderList {
         }
         return false;
     }
+
+    public List<Order> getUserOrders(User user){
+        List<Order> userOrders = new ArrayList<>();
+        for (Order order: orders
+        ) {
+            if (order.getUser().getId().equals(user.getId())){
+                userOrders.add(order);
+            }
+        }
+        return userOrders;
+    }
 }
