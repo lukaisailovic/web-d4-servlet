@@ -1,7 +1,6 @@
 package com.web_d4;
 
-import com.web_d4.app.DaysOfWeek;
-import com.web_d4.app.FoodForm;
+import com.web_d4.app.*;
 import com.web_d4.core.HtmlResponse;
 import com.web_d4.core.StaticFileReader;
 
@@ -19,6 +18,7 @@ public class FoodServlet extends HttpServlet {
 
     private final Map<String,String> views = new HashMap<>();
     private final Map<DaysOfWeek, List<String>> mealsPerDay = new HashMap<>();
+
 
     public void init() {
         ServletContext context = getServletContext();
@@ -38,6 +38,9 @@ public class FoodServlet extends HttpServlet {
             e.printStackTrace();
         }
 
+        OrderList orderList = new OrderList();
+        orderList.save(context);
+
 
     }
     @Override
@@ -54,9 +57,19 @@ public class FoodServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        OrderList orderList = OrderList.get(getServletContext());
+        List<Order> orders = new ArrayList<>();
+        User user = new User(req.getSession().getId());
         for (DaysOfWeek day: DaysOfWeek.values()){
-            System.out.println("USER "+req.getSession().getId()+" FOR DAY " + day.toString() + " CHOSE "+ req.getParameter(day.toString().toLowerCase()));
+            String meal = req.getParameter(day.toString().toLowerCase());
+            if (meal.equals("")){
+                resp.sendRedirect("/error");
+            }
+            orders.add(new Order(user,day,meal));
+            System.out.println("USER "+req.getSession().getId()+" FOR DAY " + day.toString() + " CHOSE "+ meal );
         }
+        orderList.addOrders(orders);
+        orderList.save(getServletContext());
     }
 
     private void loadMeals(ServletContext context) throws IOException {
