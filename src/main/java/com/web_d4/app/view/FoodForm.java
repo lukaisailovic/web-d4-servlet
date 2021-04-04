@@ -1,4 +1,4 @@
-package com.web_d4.app;
+package com.web_d4.app.view;
 
 import com.web_d4.app.DaysOfWeek;
 

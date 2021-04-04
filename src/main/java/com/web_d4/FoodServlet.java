@@ -1,6 +1,7 @@
 package com.web_d4;
 
 import com.web_d4.app.*;
+import com.web_d4.app.view.FoodForm;
 import com.web_d4.core.HtmlResponse;
 import com.web_d4.core.StaticFileReader;
 
