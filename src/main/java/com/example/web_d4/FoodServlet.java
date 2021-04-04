@@ -16,7 +16,7 @@ import java.util.Set;
 @WebServlet(name = "foodServlet", value = "/order")
 public class FoodServlet extends HttpServlet {
 
-    private Map<String,String> views = new HashMap<>();
+    private final Map<String,String> views = new HashMap<>();
 
     public void init() {
         ServletContext context = getServletContext();
