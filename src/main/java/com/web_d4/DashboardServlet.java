@@ -82,6 +82,8 @@ public class DashboardServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        super.doPost(req, resp);
+        OrderList orderList = new OrderList();
+        orderList.save(getServletContext());
+        resp.sendRedirect(PATH_PREFIX+"odabrana-jela?password="+this.password);
     }
 }
