@@ -40,7 +40,11 @@ public class FoodServlet extends HttpServlet {
         resp.setContentType("text/html");
         PrintWriter out = resp.getWriter();
 
-        out.println(this.views.get("order"));
+        HtmlResponse htmlResponse = new HtmlResponse(this.views.get("order"));
+        FoodForm foodForm = new FoodForm(this.mealsPerDay);
+        htmlResponse.addParameter("form",foodForm.build());
+
+        out.println(htmlResponse.getHtml());
     }
 
 

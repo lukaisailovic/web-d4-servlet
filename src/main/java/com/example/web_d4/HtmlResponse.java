@@ -34,6 +34,7 @@ public class HtmlResponse {
     }
 
     public String getHtml() {
+        this.replaceParameters();
         return html;
     }
 }
