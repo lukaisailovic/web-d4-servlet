@@ -1,9 +1,6 @@
 package com.web_d4;
 
-import com.web_d4.app.FoodForm;
-import com.web_d4.app.OrderList;
-import com.web_d4.app.User;
-import com.web_d4.app.UserOrderHtml;
+import com.web_d4.app.*;
 import com.web_d4.core.HtmlResponse;
 import com.web_d4.core.StaticFileReader;
 
@@ -15,7 +12,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 
@@ -23,7 +22,7 @@ import java.util.Map;
 public class SuccessOrderServlet extends HttpServlet {
 
     private final Map<String,String> views = new HashMap<>();
-
+    private static final String PATH_PREFIX = "/web-d4/";
 
     @Override
     public void init() throws ServletException {
@@ -46,8 +45,17 @@ public class SuccessOrderServlet extends HttpServlet {
         HtmlResponse htmlResponse = new HtmlResponse(this.views.get("success"));
         User user = new User(req.getSession().getId());
         OrderList orderList = OrderList.get(getServletContext());
-        UserOrderHtml userOrderHtml = new UserOrderHtml(orderList.getUserOrders(user));
-        htmlResponse.addParameter("userOrder",userOrderHtml.build());
-        out.println(htmlResponse.getHtml());
+        List<Order> userOrders = new ArrayList<>();
+        if (orderList != null){
+            userOrders = orderList.getUserOrders(user);
+        }
+        if (userOrders.size() > 0){
+            UserOrderHtml userOrderHtml = new UserOrderHtml(userOrders);
+            htmlResponse.addParameter("userOrder",userOrderHtml.build());
+            out.println(htmlResponse.getHtml());
+        } else {
+            resp.sendRedirect(PATH_PREFIX+"order");
+        }
+
     }
 }
