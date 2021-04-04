@@ -19,7 +19,7 @@ public class FoodServlet extends HttpServlet {
 
     private static final String PATH_PREFIX = "/web-d4/";
     private final Map<String,String> views = new HashMap<>();
-    private final Map<DaysOfWeek, List<String>> mealsPerDay = new HashMap<>();
+    private Map<DaysOfWeek, List<String>> mealsPerDay = new HashMap<>();
 
 
     public void init() {
@@ -35,7 +35,7 @@ public class FoodServlet extends HttpServlet {
 
         // load meals
         try {
-            this.loadMeals(context);
+            this.mealsPerDay = MealsLoader.loadAll(context);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -82,28 +82,5 @@ public class FoodServlet extends HttpServlet {
         resp.sendRedirect(PATH_PREFIX+"success");
     }
 
-    private void loadMeals(ServletContext context) throws IOException {
-        for (DaysOfWeek day: DaysOfWeek.values()){
-            String path = "/MEALS/"+day.toString().toLowerCase()+".txt";
-            InputStream is = context.getResourceAsStream(path);
-            if (is != null) {
-                InputStreamReader isr = new InputStreamReader(is);
-                BufferedReader reader = new BufferedReader(isr);
-                String text;
-                // We read the file line by line and later will be displayed on the
-                // browser page.
-                while ((text = reader.readLine()) != null) {
-                    if (!mealsPerDay.containsKey(day)){
-                        ArrayList<String> meals = new ArrayList<>();
-                        meals.add(text);
-                        mealsPerDay.put(day,meals);
-                    } else {
-                        mealsPerDay.get(day).add(text);
-                    }
-                    System.out.println("Added "+text+" on "+day.toString());
-                }
-            }
 
-        }
-    }
 }

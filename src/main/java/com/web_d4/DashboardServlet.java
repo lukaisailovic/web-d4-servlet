@@ -1,10 +1,11 @@
 package com.web_d4;
 
 
-import com.web_d4.app.Order;
+
+import com.web_d4.app.DaysOfWeek;
+import com.web_d4.app.MealsLoader;
 import com.web_d4.app.OrderList;
-import com.web_d4.app.User;
-import com.web_d4.app.view.UserOrderHtml;
+import com.web_d4.app.view.CurrentOrdersHtml;
 import com.web_d4.core.HtmlResponse;
 import com.web_d4.core.StaticFileReader;
 
@@ -16,8 +17,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.ArrayList;
 import java.util.HashMap;
+
 import java.util.List;
 import java.util.Map;
 
@@ -28,6 +29,8 @@ public class DashboardServlet extends HttpServlet {
     private final Map<String,String> views = new HashMap<>();
     private static final String PATH_PREFIX = "/web-d4/";
     private String password;
+    private Map<DaysOfWeek, List<String>> mealsPerDay = new HashMap<>();
+
 
     @Override
     public void init() throws ServletException {
@@ -48,6 +51,13 @@ public class DashboardServlet extends HttpServlet {
             e.printStackTrace();
         }
 
+        // load meals
+        try {
+            this.mealsPerDay = MealsLoader.loadAll(context);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
     }
 
     @Override
@@ -57,6 +67,12 @@ public class DashboardServlet extends HttpServlet {
             PrintWriter out = resp.getWriter();
             HtmlResponse htmlResponse = new HtmlResponse(this.views.get("dashboard"));
             OrderList orderList = OrderList.get(getServletContext());
+            if (orderList == null){
+                orderList = new OrderList();
+                orderList.save(getServletContext());
+            }
+            CurrentOrdersHtml currentOrdersHtml = new CurrentOrdersHtml(orderList,this.mealsPerDay);
+            htmlResponse.addParameter("currentOrders",currentOrdersHtml.build());
             out.println(htmlResponse.getHtml());
         } else {
             resp.setStatus(403);
