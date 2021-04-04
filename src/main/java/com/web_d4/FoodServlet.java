@@ -16,6 +16,7 @@ import java.util.*;
 @WebServlet(name = "foodServlet", value = "/order")
 public class FoodServlet extends HttpServlet {
 
+    private static final String PATH_PREFIX = "/web-d4/";
     private final Map<String,String> views = new HashMap<>();
     private final Map<DaysOfWeek, List<String>> mealsPerDay = new HashMap<>();
 
@@ -45,14 +46,21 @@ public class FoodServlet extends HttpServlet {
     }
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        resp.setContentType("text/html");
-        PrintWriter out = resp.getWriter();
-        req.getSession().getId();
-        HtmlResponse htmlResponse = new HtmlResponse(this.views.get("order"));
-        FoodForm foodForm = new FoodForm(this.mealsPerDay);
-        htmlResponse.addParameter("form",foodForm.build());
+        String id = req.getSession().getId();
+        User user = new User(id);
+        OrderList orderList = OrderList.get(getServletContext());
+        if (orderList.hasOrders(user)){
+            resp.sendRedirect(PATH_PREFIX+"success");
+        } else {
+            resp.setContentType("text/html");
+            PrintWriter out = resp.getWriter();
+            HtmlResponse htmlResponse = new HtmlResponse(this.views.get("order"));
+            FoodForm foodForm = new FoodForm(this.mealsPerDay);
+            htmlResponse.addParameter("form",foodForm.build());
 
-        out.println(htmlResponse.getHtml());
+            out.println(htmlResponse.getHtml());
+        }
+
     }
 
     @Override
@@ -63,13 +71,14 @@ public class FoodServlet extends HttpServlet {
         for (DaysOfWeek day: DaysOfWeek.values()){
             String meal = req.getParameter(day.toString().toLowerCase());
             if (meal.equals("")){
-                resp.sendRedirect("/error");
+                resp.sendRedirect(PATH_PREFIX+"error");
             }
             orders.add(new Order(user,day,meal));
             System.out.println("USER "+req.getSession().getId()+" FOR DAY " + day.toString() + " CHOSE "+ meal );
         }
         orderList.addOrders(orders);
         orderList.save(getServletContext());
+        resp.sendRedirect(PATH_PREFIX+"success");
     }
 
     private void loadMeals(ServletContext context) throws IOException {

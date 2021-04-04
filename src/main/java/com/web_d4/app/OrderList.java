@@ -25,4 +25,14 @@ public class OrderList {
     public void save(ServletContext context){
         context.setAttribute(KEY,this);
     }
+
+    public boolean hasOrders(User user){
+        for (Order order: orders
+             ) {
+            if (order.getUser().getId().equals(user.getId())){
+                return true;
+            }
+        }
+        return false;
+    }
 }
